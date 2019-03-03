@@ -1,0 +1,17 @@
+{
+  "extends": "../../tslint.json",
+  "rules": {
+    "directive-selector": [
+      true,
+      "attribute",
+      "crds-okta-auth",
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      "crds-okta-auth",
+      "kebab-case"
+    ]
+  }
+}

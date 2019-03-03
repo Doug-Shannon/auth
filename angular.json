@@ -1,0 +1,51 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "",
+  "projects": {
+    "crds-okta-auth": {
+      "root": "libs/crds-okta-auth",
+      "sourceRoot": "libs/crds-okta-auth/src",
+      "projectType": "library",
+      "prefix": "crds-okta-auth",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/crds-okta-auth/tsconfig.lib.json",
+            "project": "libs/crds-okta-auth/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "watch": true,
+            "main": "libs/crds-okta-auth/src/test.ts",
+            "tsConfig": "libs/crds-okta-auth/tsconfig.spec.json",
+            "karmaConfig": "libs/crds-okta-auth/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/crds-okta-auth/tsconfig.lib.json",
+              "libs/crds-okta-auth/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "warnings": {
+      "typescriptMismatch": false,
+      "versionMismatch": false
+    },
+    "defaultCollection": "@nrwl/schematics"
+  },
+  "defaultProject": "crds-okta-auth"
+}

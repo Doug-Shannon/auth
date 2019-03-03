@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/libs/crds-okta-auth",
+  "lib": {
+    "entryFile": "src/index.ts"
+  }
+}
