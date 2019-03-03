@@ -5,7 +5,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { cold, getTestScheduler } from 'jasmine-marbles';
 import { AuthenticatedGuard } from './authenticated.guard';
 
-fdescribe('AuthenticatedGuard', () => {
+describe('AuthenticatedGuard', () => {
   let mockAuthenticationService, mockLoggerService;
   beforeEach(() => {
     mockAuthenticationService = jasmine.createSpyObj<CrdsAuthenticationService>('signin', ['authenticated']);

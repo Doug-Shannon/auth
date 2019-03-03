@@ -4,15 +4,16 @@ import { LoggerService } from './logger.service';
 import { of } from 'rxjs';
 import { CRDSTokens } from '../models/crds-token.models';
 
-fdescribe('CrdsAuthenticationService', () => {
+describe('CrdsAuthenticationService', () => {
   let mokta, mockLoggerService;
   beforeEach(() => {
-    mockLoggerService = jasmine.createSpyObj<LoggerService>('log', ['Log']);
-    mokta = {
-      session: jasmine.createSpyObj('session', ['exists']),
-      token: jasmine.createSpyObj('token', ['getWithoutPrompt']),
-      tokenManager: jasmine.createSpyObj('tokenManager', ['add', 'get'])
-    };
+    mockLoggerService = jasmine.createSpyObj<LoggerService>('log', ['Log', 'Error']);
+    mokta = jasmine.createSpyObj('okta', ['signOut']);
+
+    mokta.session = jasmine.createSpyObj('session', ['exists']);
+    mokta.token = jasmine.createSpyObj('token', ['getWithoutPrompt']);
+    mokta.tokenManager = jasmine.createSpyObj('tokenManager', ['add', 'get', 'clear']);
+
     TestBed.configureTestingModule({
       providers: [
         {
@@ -23,8 +24,6 @@ fdescribe('CrdsAuthenticationService', () => {
         }
       ]
     });
-
-    mokta.session.exists.and.returnValue(Promise.resolve(true));
   });
 
   it('should be created', inject([CrdsAuthenticationService], (service: CrdsAuthenticationService) => {
@@ -54,6 +53,7 @@ fdescribe('CrdsAuthenticationService', () => {
       fakeAsync(
         inject([CrdsAuthenticationService], (service: CrdsAuthenticationService) => {
           mokta.tokenManager.get.and.returnValues(Promise.resolve(null), Promise.resolve(null));
+          mokta.session.exists.and.returnValues(Promise.resolve(true));
           mokta.token.getWithoutPrompt.and.returnValue(Promise.resolve(['token1', 'token2']));
           let tokens;
           service.authenticated().subscribe(t => {
@@ -86,15 +86,36 @@ fdescribe('CrdsAuthenticationService', () => {
     );
   });
 
-  xdescribe('Signout Tests', () => {
-    it('tokens in dictionary, session exists, should return tokens', inject(
+  describe('Signout Tests', () => {
+    it('signout success', inject(
       [CrdsAuthenticationService],
-      (service: CrdsAuthenticationService) => {
-        mokta.tokenManager.get.and.returnValues(Promise.resolve('token2'), Promise.resolve('token1'));
-        service.authenticated().subscribe(tokens => {
-          expect(tokens).toEqual(CRDSTokens.From({ access_token: 'token1', id_token: 'token2' }));
-        });
-      }
+      fakeAsync((service: CrdsAuthenticationService) => {
+        mokta.signOut.and.returnValue(Promise.resolve(null));
+
+        let res;
+        service.signOut().subscribe(result => {
+          res = result;
+        })
+        tick(15000);
+        expect(res).toEqual(true);
+        expect(mokta.tokenManager.clear).toHaveBeenCalled();
+      })
+    ));
+
+    it('signout failed', inject(
+      [CrdsAuthenticationService],
+      fakeAsync((service: CrdsAuthenticationService) => {
+        mokta.signOut.and.returnValue(Promise.reject(null));
+
+        let res;
+        service.signOut().subscribe(result => {
+          res = result;
+        })
+        tick(15000);
+        expect(res).toEqual(false);
+        expect(mokta.tokenManager.clear).not.toHaveBeenCalled();
+        expect(mockLoggerService.Error).toHaveBeenCalled();
+      })
     ));
   });
 });

@@ -29,7 +29,7 @@ export class CrdsAuthenticationService {
       }),
       catchError(err => {
         this.log.Error('AUTHENTICATION SERICE: okta signout function returned error', err);
-        return of(null);
+        return of(false);
       })
     );
   }

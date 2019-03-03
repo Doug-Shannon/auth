@@ -1,10 +1,11 @@
+import { LoggerService } from './logger.service';
+import { CookieService } from 'ngx-cookie-service';
 import { tap, map, switchMap, catchError } from 'rxjs/operators';
 import { Injectable, Inject } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
 
 import * as OktaSignIn from '@okta/okta-signin-widget';
 
-import { CrdsCookiesService } from './crds-cookies.service';
 import { OktaService } from '../provider/okta.service';
 import { OktaWidgetConfigService } from '../provider/okta-widget-config.service';
 
@@ -13,7 +14,8 @@ export class CrdsSigninService {
   constructor(
     @Inject(OktaService) private okta,
     @Inject(OktaWidgetConfigService) private config,
-    private cookies: CrdsCookiesService
+    private cookies: CookieService,
+    private log: LoggerService
   ) {}
 
   /**
@@ -27,12 +29,16 @@ export class CrdsSigninService {
   public runSigninFlow(): Observable<boolean> {
     return this.getTokensFromUrl().pipe(
       switchMap(token => {
-        if (token) {
+        if (!!token) {
           this.addTokensToManager(token);
           return of(true);
         } else {
           return this.handleIfActiveSession().pipe(tap(isActive => (!isActive ? this.setRedirectUrl() : null)));
         }
+      }),
+      catchError(err => {
+        this.log.Error('SIGNIN SERVICE: error in signin flow', err)
+        return of(false);
       })
     );
   }
@@ -52,10 +58,10 @@ export class CrdsSigninService {
    *
    */
   public redirectToOriginUrl(): void {
-    const redirect_url = this.cookies.getCookie('redirect_url');
-    this.cookies.deleteCookie('redirect_url');
+    const redirect_url = this.cookies.get('redirect_url');
+    this.cookies.delete('redirect_url');
 
-    window.location.replace(redirect_url || 'https://www.crossroads.net');
+    this.windowLocationReplace(redirect_url || 'https://www.crossroads.net');
   }
 
   /**
@@ -63,9 +69,9 @@ export class CrdsSigninService {
    * and erases the current url in the browser history
    */
   private setRedirectUrl(): void {
-    const redirect_url = this.cookies.getUrlParam('redirect_url');
+    const redirect_url = this.getUrlParam('redirect_url');
     if (redirect_url) {
-      this.cookies.setCookie('redirect_url', redirect_url, 1);
+      this.cookies.set('redirect_url', redirect_url, 1);
     }
 
     window.history.replaceState(null, null, window.location.pathname);
@@ -90,7 +96,7 @@ export class CrdsSigninService {
    * Checks if the current user just registered
    */
   private isAccountActivation(): boolean {
-    return this.cookies.getUrlParam('type_hint') === 'ACTIVATION';
+    return this.getUrlParam('type_hint') === 'ACTIVATION';
   }
 
   /**
@@ -113,9 +119,12 @@ export class CrdsSigninService {
               scopes: ['openid', 'profile', 'email'],
               responseType: ['id_token', 'token']
             })
-          ).pipe(tap((tokens: any) => this.addTokensToManager(tokens)));
+          ).pipe(
+            tap((tokens: any) => this.addTokensToManager(tokens)),
+            map(tokens => !!tokens)
+          );
         } else {
-          return of(isActive);
+          return of(false);
         }
       }),
       tap(isActive => {
@@ -125,5 +134,14 @@ export class CrdsSigninService {
         }
       })
     );
+  }
+
+  private getUrlParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  private windowLocationReplace(url: string) {
+    window.location.replace(url);
   }
 }

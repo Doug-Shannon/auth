@@ -12,12 +12,16 @@ import { CrdsSigninService } from './services/crds-signin.service';
 import { CrdsAuthenticationService } from './services/crds-authentication.service';
 import { CRDSTokenInjectorInterceptor } from './interceptors/crds-token-injector.interceptor';
 import { TokenInjectorDomains } from './provider/token-injector-domains.provider';
+import { CRDSOktaConfig } from './models/crds-okta-config.model';
+import { CookieService } from 'ngx-cookie-service';
 
 export { CanLoginGuard } from './guards/can-login.guard';
 export { AuthenticatedGuard } from './guards/authenticated.guard';
 export { CrdsAuthenticationService } from './services/crds-authentication.service';
 export { CrdsSigninService } from './services/crds-signin.service';
 export { CRDSTokenInjectorInterceptor } from './interceptors/crds-token-injector.interceptor';
+export { CRDSOktaConfig } from './models/crds-okta-config.model';
+export { CRDSTokens } from './models/crds-token.models';
 
 /**
  * base config used for the sign in widget
@@ -54,21 +58,6 @@ const authBaseConfig = {
   }
 };
 
-/**
- * Interface that consuming applications will use to instantiate this package
- */
-export interface CRDSOktaConfig {
-  oktaBase: {
-    url: string;
-    clientId: string;
-    redirectUri: string;
-    fromUri: string;
-    idps: { type: string; id: string }[];
-  };
-  tokenInjectorDomains: string[];
-  logging: boolean;
-}
-
 @NgModule({
   imports: [CommonModule],
   declarations: [CRDSSignInWidgetDirective],
@@ -103,7 +92,8 @@ export class CrdsOktaAuthModule {
         {
           provide: LoggingStatus,
           useValue: config.logging
-        }
+        },
+        CookieService
       ]
     };
   }

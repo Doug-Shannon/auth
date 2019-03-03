@@ -5,7 +5,7 @@ import { CanLoginGuard } from './can-login.guard';
 import { cold, getTestScheduler } from 'jasmine-marbles';
 import { LoggerService } from '../services/logger.service';
 
-fdescribe('CanLoginGuard', () => {
+describe('CanLoginGuard', () => {
   let mockSigninService, mockLoggerService;
   beforeEach(() => {
     mockSigninService = jasmine.createSpyObj<CrdsSigninService>('signin', ['runSigninFlow', 'redirectToOriginUrl']);

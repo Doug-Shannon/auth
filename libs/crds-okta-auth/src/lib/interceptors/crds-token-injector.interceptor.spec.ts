@@ -24,7 +24,7 @@ export class ExampleDataService {
   }
 }
 
-fdescribe(`AuthHttpInterceptor`, () => {
+describe(`AuthHttpInterceptor`, () => {
   let httpMock: HttpTestingController;
   let dataService: ExampleDataService;
   const mockAuthService = jasmine.createSpyObj<CrdsAuthenticationService>('auth', ['authenticated']);
