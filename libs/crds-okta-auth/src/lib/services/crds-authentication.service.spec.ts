@@ -54,13 +54,13 @@ describe('CrdsAuthenticationService', () => {
         inject([CrdsAuthenticationService], (service: CrdsAuthenticationService) => {
           mokta.tokenManager.get.and.returnValues(Promise.resolve(null), Promise.resolve(null));
           mokta.session.exists.and.returnValues(Promise.resolve(true));
-          mokta.token.getWithoutPrompt.and.returnValue(Promise.resolve(['token1', 'token2']));
+          mokta.token.getWithoutPrompt.and.returnValue(Promise.resolve(['id_token', 'access_token']));
           let tokens;
           service.authenticated().subscribe(t => {
             tokens = t;
           });
           tick(15000);
-          expect(tokens).toEqual(CRDSTokens.From({ access_token: 'token1', id_token: 'token2' }));
+          expect(tokens).toEqual(CRDSTokens.From({ id_token: 'id_token', access_token: 'access_token' }));
           expect(mokta.session.exists).toHaveBeenCalled();
         })
       )

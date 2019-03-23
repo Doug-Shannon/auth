@@ -3,7 +3,7 @@ import { CrdsAuthenticationService } from '../services/crds-authentication.servi
 
 import { Injectable, Inject } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, flatMap, first, catchError } from 'rxjs/operators';
 import { TokenInjectorDomains } from '../provider/token-injector-domains.provider';
 
@@ -18,7 +18,7 @@ export class CRDSTokenInjectorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return this.authService.authenticated().pipe(
       first(),
-      flatMap(tokens => {
+      map(tokens => {
         try {
           let outgoingReq: HttpRequest<any> = request;
 
@@ -37,16 +37,17 @@ export class CRDSTokenInjectorInterceptor implements HttpInterceptor {
             this.log.Info('INTERCEPTOR: not logged in or tokens are missing, not attaching headers');
           }
           this.log.Info('INTERCEPTOR: outgoing request', outgoingReq);
-          return next.handle(outgoingReq);
+          return outgoingReq;
         } catch {
           this.log.Error('INTERCEPTOR: error processing request, sending original', request);
-          return next.handle(request);
+          return request;
         }
       }),
       catchError(err => {
-        this.log.Error('INTERCEPTOR: error getting tokens, sending original request', request);
-        return next.handle(request);
-      })
+        this.log.Error('INTERCEPTOR: error getting tokens, sending original request.  ERROR: ', err);
+        return of(request);
+      }),
+      flatMap((req: HttpRequest<any>) => next.handle(req))
     );
   }
 

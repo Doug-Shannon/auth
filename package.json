@@ -1,6 +1,6 @@
 {
-  "name": "crds-okta-auth",
-  "version": "0.0.0",
+  "name": "@crds_npm/crds-okta-auth",
+  "version": "0.0.2",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

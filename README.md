@@ -1,44 +1,194 @@
-# CrdsOktaAuth
+# Crossroads Okta Angular Library
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) using [Nrwl Nx](https://nrwl.io/nx).
+Crds-okta-auth will enable your product to:
 
-## Nrwl Extensions for Angular (Nx)
+- authenticate through okta
+- check authentication status
+- protect routes
+- append access tokens to requests to predefined origins
 
-<a href="https://nrwl.io/nx"><img src="https://preview.ibb.co/mW6sdw/nx_logo.png"></a>
+<!-- ## Getting Started
 
-Nx is an open source toolkit for enterprise Angular applications.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-Nx is designed to help you create and build enterprise grade Angular applications. It provides an opinionated approach to application project structure and patterns.
+### Prerequisites
 
-## Quick Start & Documentation
+What things you need to install the software and how to install them
 
-[Watch a 5-minute video on how to get started with Nx.](http://nrwl.io/nx)
+```
+Give examples
+``` -->
 
-## Generate your first application
+## Installing
 
-Run `ng generate app myapp` to generate an application. When using Nx, you can create multiple applications and libraries in the same CLI workspace. Read more [here](http://nrwl.io/nx).
+---
 
-## Development server
+### Install via NPM with
 
-Run `ng serve --project=myapp` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```bash
+npm install --save @crds_npm/crds-okta-auth
+```
 
-## Code scaffolding
+### Build the config json and add crds-okta-auth module as a dependency
 
-Run `ng generate component component-name --project=myapp` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```typescript
+import {
+  CrdsOktaAuthModule,
+  CRDSOktaConfig,
+  AuthenticatedGuard,
+  CRDSTokenInjectorInterceptor
+} from '@crds_npm/crds-okta-auth';
 
-## Build
+const authConfig: CRDSOktaConfig = {
+  oktaBase: {
+    url: 'INSERT URL',
+    clientId: 'INSERT CLIENT ID',
+    redirectUri: 'URL TO REDIRECT TO AFTER AUTHENTICATION',
+    fromUri: 'URL TO REDIRECT TO AFTER AUTHENTICATION',
+    idps: [{ type: 'FACEBOOK', id: 'FACEBOOK IDP ID' }, { type: 'GOOGLE', id: 'GOOGLE IDP ID' }]
+  },
+  tokenInjectorDomains: ['ARRAY OF DOMAINS TO APPEND TOKEN INTO HEADER ON REQUESTS'],
+  logging: true
+};
 
-Run `ng build --project=myapp` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+@NgModule({
+  declarations: [
+    ...
+  ],
+  imports: [
+    ...
+    CrdsOktaAuthModule.forRoot(authConfig)
+    ...
+  ],
+  providers: [
+    ...
+    { provide: HTTP_INTERCEPTORS, useClass: CRDSTokenInjectorInterceptor, multi: true }
+    ...
+    ]
+})
+```
 
-## Running unit tests
+## API
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
+### Table of Contents
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+[Modules](#Modules)                       | [Services](#Services)                                   | [Interceptors](#Interceptors)                                 | [Guards](#Guards)                         | [Directives](#Directives)                               | [Classes](#Classes)
+---                                       | ---                                                     | ---                                                           | ---                                       | ---                                                     | ---
+[CrdsOktaAuthModule](#CrdsOktaAuthModule) | [CrdsAuthenticationService](#CrdsAuthenticationService) | [CrdsTokenInjectorInterceptor](#CrdsTokenInjectorInterceptor) | [AuthenticatedGuard](#AuthenticatedGuard) | [CRDSSignInWidgetDirective](#CRDSSignInWidgetDirective) | [CRDSOktaConfig](CRDSOktaConfig)
+&nbsp;                                    | [CrdsSigninService](#CrdsSigninService)                 |            &nbsp;                                             | [CanLoginGuard](#CanLoginGuard)           |                      &nbsp;                             | [CRDSTokens\ICRDSTokens](#CRDSTokens)
 
-## Further help
+### Documentation
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+---
+
+#### Modules
+
+---
+
+##### ***`CrdsOktaAuthModule`***
+
+>`function`: forRoot(config: CRDSOktaConfig): ModuleWithProviders
+
+Base angular module for providing CRDS-OKTA-AUTH for your application.  Requires an instance of [`CRDSOktaConfig`](CRDSOktaConfig) to instantiate.  Provided in the `import` section of your Core Module.
+
+example:
+
+```typescript
+import { CrdsOktaAuthModule, CRDSOktaConfig} from '@crds_npm/crds-okta-auth';
+
+const authConfig: CRDSOktaConfig = {...};
+
+@NgModule({
+  declarations: [...],
+  imports: [CrdsOktaAuthModule.forRoot(authConfig)
+    ...
+  ],
+  providers: [...]
+})
+```
+
+---
+
+#### Services
+
+---
+
+##### ***`CrdsAuthenticationService`***
+
+##### ***`CrdsSigninService`***
+
+---
+
+#### Interceptors
+
+---
+
+##### ***`CrdsTokenInjectorInterceptor`***
+
+---
+
+#### Guards
+
+---
+
+##### ***`AuthenticatedGuard`***
+
+##### ***`CanLoginGuard`***
+
+---
+
+#### Directives
+
+---
+
+##### ***`CRDSSignInWidgetDirective`***
+
+---
+
+#### Classes
+
+---
+
+##### ***`CRDSOktaConfig`***
+
+##### ***`CRDSTokens`***
+
+## Running the tests
+
+Explain how to run the automated tests for this system
+
+## Deployment
+
+Add additional notes about how to deploy this on a live system
+
+## Built With
+
+- [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+- [Maven](https://maven.apache.org/) - Dependency Management
+- [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+
+## Contributing
+
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+
+## Authors
+
+- **Billie Thompson** - _Initial work_ - [PurpleBooth](https://github.com/PurpleBooth)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+- Hat tip to anyone whose code was used
+- Inspiration
+- etc

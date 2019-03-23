@@ -5,8 +5,7 @@
     "entryFile": "src/index.ts",
     "umdModuleIds": {
       "@okta/okta-auth-js": "OktaAuth",
-      "@okta/okta-signin-widget": "OktaSignIn",
-      "ngx-cookie-service": "ngxCookieService"
+      "@okta/okta-signin-widget": "OktaSignIn"
     }
   }
 }

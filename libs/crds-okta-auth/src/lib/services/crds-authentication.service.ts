@@ -66,11 +66,11 @@ export class CrdsAuthenticationService {
           ).pipe(
             first(),
             tap((tokens: any) => {
-              this.okta.tokenManager.add('id_token', tokens[1]);
-              this.okta.tokenManager.add('access_token', tokens[0]);
+              this.okta.tokenManager.add('id_token', tokens[0]);
+              this.okta.tokenManager.add('access_token', tokens[1]);
             }),
             map(tokens => {
-              return CRDSTokens.From({ access_token: tokens[0], id_token: tokens[1] });
+              return CRDSTokens.From({ id_token: tokens[0], access_token: tokens[1] });
             }),
             catchError(err => {
               this.log.Error('AUTHENTICATION SERICE: okta get without prompt function returned error', err);
