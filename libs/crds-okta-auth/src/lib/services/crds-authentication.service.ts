@@ -22,6 +22,7 @@ export class CrdsAuthenticationService {
 
   public signOut(): Observable<boolean> {
     return from(this.okta.signOut()).pipe(
+      first(),
       map(() => {
         this.okta.tokenManager.clear();
         this.log.Log('successfully logged out');

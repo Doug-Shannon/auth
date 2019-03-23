@@ -89,9 +89,11 @@ const authConfig: CRDSOktaConfig = {
 
 ##### ***`CrdsOktaAuthModule`***
 
+Base angular module for providing CRDS-OKTA-AUTH for your application.
+
 >`function`: forRoot(config: CRDSOktaConfig): ModuleWithProviders
 
-Base angular module for providing CRDS-OKTA-AUTH for your application.  Requires an instance of [`CRDSOktaConfig`](CRDSOktaConfig) to instantiate.  Provided in the `import` section of your Core Module.
+Requires an instance of [`CRDSOktaConfig`](CRDSOktaConfig) to instantiate.  Provided in the `import` section of your Core Module.
 
 example:
 
@@ -116,6 +118,40 @@ const authConfig: CRDSOktaConfig = {...};
 ---
 
 ##### ***`CrdsAuthenticationService`***
+
+Basic service used to interact with Okta Auth Status
+
+>`function`: authenticated(): Observable\<[CRDSTokens](#CRDSTokens)\>
+
+Returns an observable that contains either the tokens for the user (if logged in), or null if not logged in.  This function will check the (local) token manager first to see if there is a session, and if there is no local session, it will check the server for an active session, and set it in the (local) token manager if one exists. 
+
+example:
+
+```typescript
+  authenticated().subscribe((tokens: CRDSTokens) => {
+    if (tokens != null) {
+      console.log('user logged in', tokens);
+    } else {
+      console.log('user is NOT logged in');
+    }
+  }
+```
+
+>`function`: signOut(): Observable\<boolean\>
+
+Returns an observable that contains whether the signout action was successful or not.
+
+example:
+
+```typescript
+    signOut().subscribe(success => {
+      if (success) {
+        console.log('log out worked')
+      } else {
+        console.log('log out failed')
+      }
+    });
+```
 
 ##### ***`CrdsSigninService`***
 
