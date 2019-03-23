@@ -155,6 +155,48 @@ example:
 
 ##### ***`CrdsSigninService`***
 
+Used to implement a custom signin page.  If using the [CRDSSignInWidgetDirective](#CRDSSignInWidgetDirective) to implement the standard crds-signin-page, this is NOT needed.  Most applications will not need to use this service.
+
+>`function`: runSigninFlow(): Observable\<boolean\>
+
+Returns an observable of boolean indicating if the user is logged in.  Sets the Redirect URL in the cookie if the user IS NOT logged in, allowing the signin page to redirect the user after login.  This function is built to be called from a route guard.
+
+under the hood:
+
+1. get tokens from url if they exist
+2. if tokens exist, add them to the manager and return true (authenticated)
+3. if tokens do not exist, check with okta to see if there is an active session
+4. if there is an active session and the user just activated their account, do some mp stuff
+5. if the session is not active, set the redirect url in the cookie
+
+example:
+
+```typescript
+runSigninFlow().pipe(
+  tap(isAuthenticated => {
+    if (isAuthenticated) {
+      redirectToOriginUrl();
+    }
+  })
+);
+```
+
+>`function`: getSigninWidget([overrideParams](https://github.com/okta/okta-signin-widget#configuration)): [OktaSigninWidget](https://github.com/okta/okta-signin-widget#oktasignin)
+
+Returns an instance of the [OktaSigninWidget](https://github.com/okta/okta-signin-widget#oktasignin).  The base config used to instantiate the auth module has enough details to generate this on its own, but the config is able to be overwritten using the [OktaSigninWidget Config](https://github.com/okta/okta-signin-widget#configuration) options.
+
+example:
+
+```typescript
+const configOverride = {...}
+
+const signInWidget = getSignInWidget(configOverride);
+```
+
+>`function`: redirectToOriginUrl(): void
+
+redirects the user to the value stored in the redirect_url cookie if it exists.  If the redirect_url cookie does not exist, redirects to www.crossroads.net
+
 ---
 
 #### Interceptors
