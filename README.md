@@ -83,11 +83,9 @@ const authConfig: CRDSOktaConfig = {
 
 ---
 
-#### Modules
+#### ***`CrdsOktaAuthModule`***
 
 ---
-
-##### ***`CrdsOktaAuthModule`***
 
 Base angular module for providing CRDS-OKTA-AUTH for your application.
 
@@ -242,6 +240,19 @@ const authConfig: CRDSOktaConfig = {
 #### ***`AuthenticatedGuard`***
 
 ---
+
+Enables Angular routes to be locked down, requiring the user to be authenticated before accessing them.
+
+example:
+
+```ty
+const routes: Routes = [
+  {
+    path: 'protected',
+    component: ProtectedComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+```
 
 ---
 
