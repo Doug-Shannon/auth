@@ -74,10 +74,10 @@ const authConfig: CRDSOktaConfig = {
 
 ### Table of Contents
 
-[Modules](#Modules)                       | [Services](#Services)                                   | [Interceptors](#Interceptors)                                 | [Guards](#Guards)                         | [Directives](#Directives)                               | [Classes](#Classes)
----                                       | ---                                                     | ---                                                           | ---                                       | ---                                                     | ---
-[CrdsOktaAuthModule](#CrdsOktaAuthModule) | [CrdsAuthenticationService](#CrdsAuthenticationService) | [CrdsTokenInjectorInterceptor](#CrdsTokenInjectorInterceptor) | [AuthenticatedGuard](#AuthenticatedGuard) | [CRDSSignInWidgetDirective](#CRDSSignInWidgetDirective) | [CRDSOktaConfig](CRDSOktaConfig)
-&nbsp;                                    | [CrdsSigninService](#CrdsSigninService)                 |            &nbsp;                                             | [CanLoginGuard](#CanLoginGuard)           |                      &nbsp;                             | [CRDSTokens\ICRDSTokens](#CRDSTokens)
+| Modules                                   | Services                                                | Interceptors                                                  | Guards                                    | Directives                                              | Classes                               |
+| ----------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------- | ------------------------------------- |
+| [CrdsOktaAuthModule](#CrdsOktaAuthModule) | [CrdsAuthenticationService](#CrdsAuthenticationService) | [CrdsTokenInjectorInterceptor](#CrdsTokenInjectorInterceptor) | [AuthenticatedGuard](#AuthenticatedGuard) | [CRDSSignInWidgetDirective](#CRDSSignInWidgetDirective) | [CRDSOktaConfig](CRDSOktaConfig)      |
+| &nbsp;                                    | [CrdsSigninService](#CrdsSigninService)                 | &nbsp;                                                        | [CanLoginGuard](#CanLoginGuard)           | &nbsp;                                                  | [CRDSTokens\ICRDSTokens](#CRDSTokens) |
 
 ### Documentation
 
@@ -113,11 +113,9 @@ const authConfig: CRDSOktaConfig = {...};
 
 ---
 
-#### Services
+#### ***`CrdsAuthenticationService`***
 
 ---
-
-##### ***`CrdsAuthenticationService`***
 
 Basic service used to interact with Okta Auth Status
 
@@ -153,7 +151,11 @@ example:
     });
 ```
 
-##### ***`CrdsSigninService`***
+---
+
+#### ***`CrdsSigninService`***
+
+---
 
 Used to implement a custom signin page.  If using the [CRDSSignInWidgetDirective](#CRDSSignInWidgetDirective) to implement the standard crds-signin-page, this is NOT needed.  Most applications will not need to use this service.
 
@@ -199,39 +201,71 @@ redirects the user to the value stored in the redirect_url cookie if it exists. 
 
 ---
 
-#### Interceptors
+#### ***`CrdsTokenInjectorInterceptor`***
 
 ---
 
-##### ***`CrdsTokenInjectorInterceptor`***
+This interceptor is used to automatically inject the `access_token` into requests made using the angular http_client module.  An array of target domains must be specified in the [CRDSOktaConfig](CRDSOktaConfig) passed to the forRoot function of the [CrdsOktaAuthModule](#CrdsOktaAuthModule).  This ensures that the okta access_token is not passed erroneously to third party api's.
+
+>`Class`: CRDSTokenInjectorInterceptor
+
+This interceptor is provided in the `providers` array of the core angular module.
+
+example:
+
+```typescript
+import { CRDSTokenInjectorInterceptor, CrdsOktaAuthModule, CRDSOktaConfig} from '@crds_npm/crds-okta-auth';
+
+const authConfig: CRDSOktaConfig = {
+  ...
+  tokenInjectorDomains: ['api.crossroads.net', 'someotherplace.crossroads.net']
+  ...
+};
+
+@NgModule({
+  declarations: [...],
+  imports: [
+    ...
+    CrdsOktaAuthModule.forRoot(authConfig)
+    ...
+  ],
+  providers: [
+    ...,
+    { provide: HTTP_INTERCEPTORS, useClass: CRDSTokenInjectorInterceptor, multi: true },
+    ...
+  ]
+})
+```
 
 ---
 
-#### Guards
+#### ***`AuthenticatedGuard`***
 
 ---
 
-##### ***`AuthenticatedGuard`***
+---
 
-##### ***`CanLoginGuard`***
+#### ***`CanLoginGuard`***
 
 ---
 
-#### Directives
+---
+
+#### ***`CRDSSignInWidgetDirective`***
 
 ---
 
-##### ***`CRDSSignInWidgetDirective`***
+---
+
+#### ***`CRDSOktaConfig`***
 
 ---
 
-#### Classes
-
 ---
 
-##### ***`CRDSOktaConfig`***
+#### ***`CRDSTokens`***
 
-##### ***`CRDSTokens`***
+---
 
 ## Running the tests
 
