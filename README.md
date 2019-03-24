@@ -7,18 +7,6 @@ Crds-okta-auth will enable your product to:
 - protect routes
 - append access tokens to requests to predefined origins
 
-<!-- ## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them
-
-```
-Give examples
-``` -->
-
 ## Installing
 
 ---
@@ -378,13 +366,34 @@ Interface and class for containing tokens.
 > &nbsp;&nbsp;&nbsp;&nbsp;id_token: string; `okta id_token`  
 > }
 
-## Running the tests
+---
 
-Explain how to run the automated tests for this system
+## Contributing
 
-## Deployment
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on npm.
 
-Add additional notes about how to deploy this on a live system
+### Building
+
+- `npm i`
+- `npm run build` - this will run a build and will watch to rebuild when changes happen
+
+### Running the tests
+
+- `npm run test`
+
+### Deployment
+
+To deploy to npm:
+
+- Get invited to the Crossroads NPM account
+- [login to npm](https://docs.npmjs.com/logging-in-to-an-npm-enterprise-registry-from-the-command-line) from the command line
+- increment the version # in the package.json according to semver
+- build the library
+- navigate to ./dist/libs/crds-okta-auth and run `npm publish --access=public`
+
+### Run Locally
+
+- [checkout `npm link`](https://docs.npmjs.com/cli/link.html)
 
 ## Author
 
