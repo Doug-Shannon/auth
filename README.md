@@ -374,7 +374,9 @@ var config: OktaBaseConfig = {
 > - [login to npm](https://docs.npmjs.com/logging-in-to-an-npm-enterprise-registry-from-the-command-line) from the command line
 > - increment the version # in the package.json according to semver
 > - build the library
-> - navigate to ./dist/libs/crds-okta-auth and run `npm publish --access=public`
+> - navigate to ./dist/libs/crds-okta-auth 
+> - increment the version # in the dist/libs/crds-okta-auth/package.json to match the current version
+> - run `npm publish --access=public`
 
 ### Run Locally
 
