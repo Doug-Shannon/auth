@@ -245,13 +245,26 @@ Enables Angular routes to be locked down, requiring the user to be authenticated
 
 example:
 
-```ty
+```typescript
+import { AuthenticatedGuard } from '@crds_npm/crds-okta-auth';
+
 const routes: Routes = [
   {
     path: 'protected',
     component: ProtectedComponent,
     canActivate: [AuthenticatedGuard]
   },
+
+
+@NgModule({
+  declarations: [...],
+  imports: [
+    ...
+    RouterModule.forRoot(routes),
+    ...
+  ],
+  providers: [...]
+})
 ```
 
 ---
@@ -260,11 +273,39 @@ const routes: Routes = [
 
 ---
 
+Enables a route for a login page to be protected and only accessible if the user IS NOT logged in.  If the user IS logged in, it will redirect them to the value stored in the `redirect_url` cookie.  This guard runs the full crds okta sign-in flow and checks the server for a session if a local one does not exist.
+
+example:
+
+```typescript
+import { CanLoginGuard } from '@crds_npm/crds-okta-auth';
+
+const routes: Routes = [
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [CanLoginGuard]
+  },
+
+
+@NgModule({
+  declarations: [...],
+  imports: [
+    ...
+    RouterModule.forRoot(routes),
+    ...
+  ],
+  providers: [...]
+})
+```
+
 ---
 
 #### ***`CRDSSignInWidgetDirective`***
 
 ---
+
+Enables an empty div to be turned into an okta signin form.
 
 ---
 
