@@ -74,7 +74,7 @@ const authConfig: CRDSOktaConfig = {
 
 > Base angular module for providing CRDS-OKTA-AUTH for your application.
 
-`function`: forRoot(config: CRDSOktaConfig): ModuleWithProviders
+**`function`: forRoot(config: CRDSOktaConfig): ModuleWithProviders**
 
 > Requires an instance of [`CRDSOktaConfig`](#CRDSOktaConfig) to instantiate.  Provided in the `import` section of your Core Module.
 
@@ -100,7 +100,7 @@ const authConfig: CRDSOktaConfig = {...};
 
 >Basic service used to interact with Okta Auth Status
 
-`function`: authenticated(): Observable\<[CRDSTokens](#CRDSTokens)\>
+**`function`: authenticated(): Observable\<[CRDSTokens](#CRDSTokens)\>**
 
 >Returns an observable that contains either the tokens for the user (if logged in), or null if not logged in.  This function will check the (local) token manager first to see if there is a session, and if there is no local session, it will check the server for an active session, and set it in the (local) token manager if one exists. 
 
@@ -114,7 +114,7 @@ const authConfig: CRDSOktaConfig = {...};
   }
 ```
 
-`function`: signOut(): Observable\<boolean\>
+**`function`: signOut(): Observable\<boolean\>**
 
 > Returns an observable that contains whether the signout action was successful or not.
 
@@ -136,7 +136,7 @@ const authConfig: CRDSOktaConfig = {...};
 
 >Used to implement a custom signin page.  If using the [CRDSSignInWidgetDirective](#CRDSSignInWidgetDirective) to implement the standard crds-signin-page, this is NOT needed.  Most applications will not need to use this service.
 
-`function`: runSigninFlow(): Observable\<boolean\>
+**`function`: runSigninFlow(): Observable\<boolean\>**
 
 >Returns an observable of boolean indicating if the user is logged in.  Sets the Redirect URL in the cookie if the user IS NOT logged in, allowing the signin page to redirect the user after login.  This function is built to be called from a route guard.  
 >  
@@ -157,7 +157,7 @@ runSigninFlow().pipe(
 );
 ```
 
-`function`: getSigninWidget([overrideParams](https://github.com/okta/okta-signin-widget#configuration)): [OktaSigninWidget](https://github.com/okta/okta-signin-widget#oktasignin)
+**`function`: getSigninWidget([overrideParams](https://github.com/okta/okta-signin-widget#configuration)): [OktaSigninWidget](https://github.com/okta/okta-signin-widget#oktasignin)**
 
 >Returns an instance of the [OktaSigninWidget](https://github.com/okta/okta-signin-widget#oktasignin).  The base config used to instantiate the auth module has enough details to generate this on its own, but the config is able to be overwritten using the [OktaSigninWidget Config](https://github.com/okta/okta-signin-widget#configuration) options.
 
@@ -167,7 +167,7 @@ const configOverride = {...}
 const signInWidget = getSignInWidget(configOverride);
 ```
 
-`function`: redirectToOriginUrl(): void
+**`function`: redirectToOriginUrl(): void**
 
 >redirects the user to the value stored in the redirect_url cookie if it exists.  If the redirect_url cookie does not exist, redirects to www.crossroads.net
 
@@ -179,7 +179,7 @@ const signInWidget = getSignInWidget(configOverride);
 
 > This interceptor is used to automatically inject the `access_token` into requests made using the angular http_client module.  An array of target domains must be specified in the [CRDSOktaConfig](#CRDSOktaConfig) passed to the forRoot function of the [CrdsOktaAuthModule](#CrdsOktaAuthModule).  This ensures that the okta access_token is not passed erroneously to third party api's.
 
-`Class`: CRDSTokenInjectorInterceptor
+**`Class`: CRDSTokenInjectorInterceptor**
 
 >This interceptor is provided in the `providers` array of the core angular module.
 
