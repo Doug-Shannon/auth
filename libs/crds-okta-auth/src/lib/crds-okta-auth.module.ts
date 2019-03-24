@@ -58,6 +58,8 @@ const authBaseConfig = {
   }
 };
 
+alert('IT FRICKIN WORKED again! 44')
+
 @NgModule({
   imports: [CommonModule],
   declarations: [CRDSSignInWidgetDirective],

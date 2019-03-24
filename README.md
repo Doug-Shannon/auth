@@ -385,6 +385,7 @@ var config: OktaBaseConfig = {
 > - run `npm link`
 > - in the local project consuming the this library, run `npm link @crds_npm/crds-okta-auth`
 >   - this creates a symlink to the dist of the local library
+> - probably restart your machine at this point, things get a little finicky
 > - in this directory run `npm run build`
 
 
