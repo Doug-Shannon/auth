@@ -9,7 +9,7 @@ export class CRDSSignInWidgetDirective implements OnInit {
   @Input() crdsSignInWidget;
 
   ngOnInit() {
-    this.renderer.setAttribute(this.el, 'id', 'widget-container')
+    this.renderer.setAttribute(this.el.nativeElement, 'id', 'widget-container')
     const okta = this.crdsAuth.getSignInWidget(this.crdsSignInWidget);
 
     okta.renderEl(

@@ -44,7 +44,6 @@ const authConfig: CRDSOktaConfig = {
     url: 'INSERT URL',
     clientId: 'INSERT CLIENT ID',
     redirectUri: 'URL TO REDIRECT TO AFTER AUTHENTICATION',
-    fromUri: 'URL TO REDIRECT TO AFTER AUTHENTICATION',
     idps: [{ type: 'FACEBOOK', id: 'FACEBOOK IDP ID' }, { type: 'GOOGLE', id: 'GOOGLE IDP ID' }]
   },
   tokenInjectorDomains: ['ARRAY OF DOMAINS TO APPEND TOKEN INTO HEADER ON REQUESTS'],
@@ -76,7 +75,7 @@ const authConfig: CRDSOktaConfig = {
 
 | Modules                                   | Services                                                | Interceptors                                                  | Guards                                    | Directives                                              | Classes                               |
 | ----------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------- | ------------------------------------- |
-| [CrdsOktaAuthModule](#CrdsOktaAuthModule) | [CrdsAuthenticationService](#CrdsAuthenticationService) | [CrdsTokenInjectorInterceptor](#CrdsTokenInjectorInterceptor) | [AuthenticatedGuard](#AuthenticatedGuard) | [CRDSSignInWidgetDirective](#CRDSSignInWidgetDirective) | [CRDSOktaConfig](CRDSOktaConfig)      |
+| [CrdsOktaAuthModule](#CrdsOktaAuthModule) | [CrdsAuthenticationService](#CrdsAuthenticationService) | [CrdsTokenInjectorInterceptor](#CrdsTokenInjectorInterceptor) | [AuthenticatedGuard](#AuthenticatedGuard) | [CRDSSignInWidgetDirective](#CRDSSignInWidgetDirective) | [CRDSOktaConfig](#CRDSOktaConfig)      |
 | &nbsp;                                    | [CrdsSigninService](#CrdsSigninService)                 | &nbsp;                                                        | [CanLoginGuard](#CanLoginGuard)           | &nbsp;                                                  | [CRDSTokens\ICRDSTokens](#CRDSTokens) |
 
 ### Documentation
@@ -91,7 +90,7 @@ Base angular module for providing CRDS-OKTA-AUTH for your application.
 
 >`function`: forRoot(config: CRDSOktaConfig): ModuleWithProviders
 
-Requires an instance of [`CRDSOktaConfig`](CRDSOktaConfig) to instantiate.  Provided in the `import` section of your Core Module.
+Requires an instance of [`CRDSOktaConfig`](#CRDSOktaConfig) to instantiate.  Provided in the `import` section of your Core Module.
 
 example:
 
@@ -203,7 +202,7 @@ redirects the user to the value stored in the redirect_url cookie if it exists. 
 
 ---
 
-This interceptor is used to automatically inject the `access_token` into requests made using the angular http_client module.  An array of target domains must be specified in the [CRDSOktaConfig](CRDSOktaConfig) passed to the forRoot function of the [CrdsOktaAuthModule](#CrdsOktaAuthModule).  This ensures that the okta access_token is not passed erroneously to third party api's.
+This interceptor is used to automatically inject the `access_token` into requests made using the angular http_client module.  An array of target domains must be specified in the [CRDSOktaConfig](#CRDSOktaConfig) passed to the forRoot function of the [CrdsOktaAuthModule](#CrdsOktaAuthModule).  This ensures that the okta access_token is not passed erroneously to third party api's.
 
 >`Class`: CRDSTokenInjectorInterceptor
 
@@ -305,7 +304,31 @@ const routes: Routes = [
 
 ---
 
-Enables an empty div to be turned into an okta signin form.
+Enables an empty div to be turned into an okta signin form.  Can be overwritten using [OktaSigninWidget Config](https://github.com/okta/okta-signin-widget#configuration).
+
+example: (using default config)
+
+```typescript
+@Component({
+  selector: 'app-login',
+  template: `<div crdsSignInWidget></div>`
+})
+export class LoginComponent {}
+```
+
+example: (overriding default config)
+
+```typescript
+@Component({
+  selector: 'app-login',
+  template: `<div [crdsSignInWidget]="config"></div>`
+})
+export class LoginComponent {
+  public config = {
+    logo: 'some_img.jpeg'
+  }
+}
+```
 
 ---
 
@@ -313,11 +336,47 @@ Enables an empty div to be turned into an okta signin form.
 
 ---
 
+Interface for OktaConfig Options.  Get these from the system administrator.  Make sure they are not commited to github and are coming from the environment.ts files as a part of the build process.
+> {  
+> &nbsp;&nbsp;&nbsp;&nbsp;oktaBase: {  
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: string; `The base URL for the Okta Crossroads organization`  
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clientId: string; `Client Id pre-registered with Okta`  
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;redirectUri: string; `The url that is redirected to after authentication. This must be pre-registered as part of client registration`  
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idps: { type: string; id: string }[]; `A list of identity providers and their corresponding IDs`  
+> &nbsp;&nbsp;&nbsp;&nbsp;};  
+> &nbsp;&nbsp;&nbsp;&nbsp;tokenInjectorDomains: string[]; `Requests made to these domains will have the users access_token included in the headers by` [CrdsTokenInjectorInterceptor](#CrdsTokenInjectorInterceptor)  
+> &nbsp;&nbsp;&nbsp;&nbsp;logging: boolean; `Enables logging for the CRDS-OKTA-AUTH library -- should be off in prod`  
+> }
+
+example:
+
+```typescript
+var config: OktaBaseConfig = {
+  oktaBase: {
+    url: 'https://acme.okta.com',
+    clientId: '12lk3j1l23kj1l2k3',
+    redirectUri: 'http://www.acme.com',
+    idps: [
+      { type: 'google'; id: 'adsdasdasd' },
+      { type: 'facebook'; id: 'acsdvasdv' }
+    ]
+  },
+  tokenInjectorDomains: ['api.acme.com', 'someotherapi.com'],
+  logging: true
+}
+```
+
 ---
 
 #### ***`CRDSTokens`***
 
 ---
+
+Interface and class for containing tokens.
+> {  
+> &nbsp;&nbsp;&nbsp;&nbsp;access_token: string; `okta access_token`  
+> &nbsp;&nbsp;&nbsp;&nbsp;id_token: string; `okta id_token`  
+> }
 
 ## Running the tests
 
@@ -327,32 +386,7 @@ Explain how to run the automated tests for this system
 
 Add additional notes about how to deploy this on a live system
 
-## Built With
+## Author
 
-- [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-- [Maven](https://maven.apache.org/) - Dependency Management
-- [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+*Doug Shannon* - _Initial work_ - [Doug-Shannon](https://github.com/Doug-Shannon)
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
-
-## Authors
-
-- **Billie Thompson** - _Initial work_ - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc

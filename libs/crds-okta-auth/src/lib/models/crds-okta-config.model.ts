@@ -3,7 +3,7 @@ export interface CRDSOktaConfig {
     url: string;
     clientId: string;
     redirectUri: string;
-    fromUri: string;
+    // fromUri: string;
     idps: { type: string; id: string }[];
   };
   tokenInjectorDomains: string[];
